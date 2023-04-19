@@ -6,7 +6,8 @@ import "../App.css";
 
 const ToggleLabel = styled.h1`
   font-size: 20px;
-  color: ${colors.green};
+  color: ${colors.greenGlowInner};
+  text-shadow: 0 0 10px ${colors.green};
   margin: auto;
   padding: 4px;
 `;
@@ -24,6 +25,7 @@ const ToggleButton = styled.div`
     box-shadow: 0px 0px 6px 6px ${colors.greenGlowOutter};
     ${ToggleLabel} {
       color: ${colors.backgroundColor};
+      text-shadow: 0 0 0;
     }
   }
 `;
@@ -34,7 +36,6 @@ const ToggleOption = styled.button`
   border: 0px;
   align-content: center;
   font-family: "Barlow", sans-serif;
-
   text-transform: uppercase;
 `;
 
