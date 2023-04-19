@@ -1,0 +1,1 @@
+export type ToggleOptions = "join" | "create";

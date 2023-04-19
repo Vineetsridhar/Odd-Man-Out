@@ -1,43 +1,61 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import omoLogo from "./assets/omo-logo.png";
 import { useFirebaseDatabase } from "./hooks/useFirebaseDatabase";
+import styled from "styled-components";
+import { colors } from "./colors";
+import { ToggleOptions } from "./types";
+import { ToggleSwitch } from "./components/ToggleSwitch";
+
+const ParentClass = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background-color: ${colors.backgroundColor};
+  color: ${colors.textColor};
+  font-family: sans-serif;
+`;
+const LandingPageInput = styled.input`
+  background-color: ${colors.secondaryBackgroundColor};
+  color: ${colors.textColor};
+  margin: 8px 0px;
+`;
+const Logo = styled.img`
+  height: 400px;
+`;
+const PlayButton = styled.button`
+  margin: 8px 0px;
+`;
 
 function App() {
-  const [count, , setCount] = useFirebaseDatabase("count", 0);
-  const [name, , setName] = useFirebaseDatabase("name", "John Doe");
-
-  const [localName, setLocalName] = useState(name);
-
-  useEffect(() => {
-    setLocalName(name);
-  }, [name]);
+  const [localName, setLocalName] = useState("");
+  const [localRoomCode, setLocalRoomCode] = useState("room code");
+  const [activeToggleOption, setActiveToggleOption] =
+    useState<ToggleOptions>("join");
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount(count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <input
+    <ParentClass>
+      <Logo src={omoLogo} className="logo" alt="Odd Man Out Logo"></Logo>
+      <h1>Nickname</h1>
+      <LandingPageInput
         type="text"
         value={localName}
         onChange={(e) => setLocalName(e.target.value)}
       />
-      <button onClick={() => setName(localName)}>Set Name</button>
-    </div>
+      <ToggleSwitch
+        activeToggleOption={activeToggleOption}
+        onToggleChange={setActiveToggleOption}
+      />
+      {activeToggleOption === "join" && (
+        <LandingPageInput
+          type="text"
+          value={localRoomCode}
+          onChange={(e) => setLocalRoomCode(e.target.value)}
+        />
+      )}
+      <PlayButton className="play">PLAY</PlayButton>
+    </ParentClass>
   );
 }
 
