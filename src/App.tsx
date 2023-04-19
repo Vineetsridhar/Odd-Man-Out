@@ -7,14 +7,15 @@ import { ToggleOptions } from "./types";
 import { ToggleSwitch } from "./components/ToggleSwitch";
 
 const ParentClass = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-rows: 3;
+  grid-template-columns: 2;
   min-height: 100vh;
   width: 100%;
   background-color: ${colors.backgroundColor};
   color: ${colors.textColor};
   font-family: sans-serif;
+  padding: 24px;
 `;
 const LandingPageInput = styled.input`
   background-color: ${colors.secondaryBackgroundColor};
@@ -25,7 +26,23 @@ const Logo = styled.img`
   height: 400px;
 `;
 const PlayButton = styled.button`
-  margin: 8px 0px;
+  margin: 24px 0px;
+  background-color: ${colors.green};
+  border-radius: 16px;
+  border: 1px solid ${colors.backgroundColor};
+  box-shadow: 0px 0px 8px 8px ${colors.greenShadow};
+  font-size: 50px;
+  grid-row: 2;
+  grid-column-start: 1;
+  grid-column-end: 3;
+`;
+const SettingsSection = styled.div`
+  grid-row: 1;
+  grid-column: 2;
+`;
+const DescriptionSection = styled.div`
+  grid-row: 3;
+  grid-column: 1;
 `;
 
 function App() {
@@ -37,24 +54,27 @@ function App() {
   return (
     <ParentClass>
       <Logo src={omoLogo} className="logo" alt="Odd Man Out Logo"></Logo>
-      <h1>Nickname</h1>
-      <LandingPageInput
-        type="text"
-        value={localName}
-        onChange={(e) => setLocalName(e.target.value)}
-      />
-      <ToggleSwitch
-        activeToggleOption={activeToggleOption}
-        onToggleChange={setActiveToggleOption}
-      />
-      {activeToggleOption === "join" && (
+      <SettingsSection>
+        <h1>Nickname</h1>
         <LandingPageInput
           type="text"
-          value={localRoomCode}
-          onChange={(e) => setLocalRoomCode(e.target.value)}
+          value={localName}
+          onChange={(e) => setLocalName(e.target.value)}
         />
-      )}
+        <ToggleSwitch
+          activeToggleOption={activeToggleOption}
+          onToggleChange={setActiveToggleOption}
+        />
+        {activeToggleOption === "join" && (
+          <LandingPageInput
+            type="text"
+            value={localRoomCode}
+            onChange={(e) => setLocalRoomCode(e.target.value)}
+          />
+        )}
+      </SettingsSection>
       <PlayButton className="play">PLAY</PlayButton>
+      <DescriptionSection>Description, Rules, etc.</DescriptionSection>
     </ParentClass>
   );
 }
