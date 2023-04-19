@@ -10,6 +10,10 @@ function App() {
 
   const [localName, setLocalName] = useState(name);
 
+  useEffect(() => {
+    setLocalName(name);
+  }, [name]);
+
   return (
     <div className="App">
       <div>
