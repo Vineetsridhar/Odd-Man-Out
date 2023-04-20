@@ -4,7 +4,6 @@ import { colors } from "../colors";
 const LandingPageInputContainer = styled.div`
   display: flex;
   align-items: center;
-  margin: 32px 0;
   width: 100%;
 `;
 const RedLabel = styled.h1`

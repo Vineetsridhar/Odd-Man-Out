@@ -45,6 +45,8 @@ const SettingsSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 32px;
+  margin-top: 32px;
 `;
 const PlayButton = styled.button`
   height: 64px;
@@ -57,6 +59,7 @@ const PlayButton = styled.button`
   font-family: sans-serif;
   font-weight: bold;
   text-transform: uppercase;
+  font-family: "Barlow", sans-serif;
   cursor: pointer;
 `;
 const DescriptionSection = styled.div`
@@ -74,6 +77,13 @@ const DescriptionSection = styled.div`
     text-transform: initial;
   }
 `;
+const HideableDiv = styled.div<{ visible: boolean }>`
+  opacity: ${(props) => (props.visible ? 1 : 0)};
+  width: 100%;
+  max-height: ${(props) => (props.visible ? "200px" : "0px")};
+  transition: all 0.2s ease-in-out;
+`;
+
 export const LandingPage = () => {
   const [localName, setLocalName] = useState("");
   const [localRoomCode, setLocalRoomCode] = useState("");
@@ -91,15 +101,19 @@ export const LandingPage = () => {
         />
         <ToggleSwitch
           activeToggleOption={activeToggleOption}
-          onToggleChange={setActiveToggleOption}
+          onToggle={() =>
+            setActiveToggleOption(
+              activeToggleOption === "join" ? "create" : "join"
+            )
+          }
         />
-        {activeToggleOption === "join" && (
+        <HideableDiv visible={activeToggleOption === "join"}>
           <LabeledInput
             label="Room Code"
             value={localRoomCode}
             onChange={(e) => setLocalRoomCode(e.target.value)}
           />
-        )}
+        </HideableDiv>
       </SettingsSection>
       <PlayButton className="play">Play</PlayButton>
       <DescriptionSection>
