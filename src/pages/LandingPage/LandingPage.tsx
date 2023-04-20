@@ -1,5 +1,7 @@
 import { useState } from "react";
 import OddManOutLogo from "../../assets/omo-logo.png";
+import OddManOutDescriptionOne from "../../assets/omo-description-1.png";
+import OddManOutDescriptionTwo from "../../assets/omo-description-2.png";
 import styled from "styled-components";
 import { colors } from "../../colors";
 import { ToggleOptions } from "../../types";
@@ -77,6 +79,14 @@ const DescriptionSection = styled.div`
     color: ${colors.textColor};
     text-transform: initial;
   }
+  div {
+    display: flex;
+    justify-content: center;
+  }
+  img {
+    height: 300px;
+    margin: 24px;
+  }
 `;
 const HideableDiv = styled.div<{ visible: boolean }>`
   opacity: ${(props) => (props.visible ? 1 : 0)};
@@ -144,6 +154,16 @@ export const LandingPage = () => {
           challenge for the players is to identify who the Odd Man Out is, while
           the Odd Man Out must try to blend in and avoid detection.
         </p>
+        <div>
+          <img
+            src={OddManOutDescriptionOne}
+            alt="Odd Man Out Description"
+          ></img>
+          <img
+            src={OddManOutDescriptionTwo}
+            alt="Odd Man Out Description"
+          ></img>
+        </div>
         <h1>How to Play:</h1>
         <ul>
           <li>Gather a group of friends (ideally 4 or more)</li>
