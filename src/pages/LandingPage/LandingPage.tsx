@@ -5,6 +5,7 @@ import { colors } from "../../colors";
 import { ToggleOptions } from "../../types";
 import { LabeledInput } from "../../components/LabeledInput";
 import { ToggleSwitch } from "../../components/ToggleSwitch";
+import { createNewRoom, joinRoom } from "../../database/helpers";
 
 const Logo = styled.img`
   min-width: 200px;
@@ -85,10 +86,22 @@ const HideableDiv = styled.div<{ visible: boolean }>`
 `;
 
 export const LandingPage = () => {
-  const [localName, setLocalName] = useState("");
+  const [nickname, setNickname] = useState("");
   const [localRoomCode, setLocalRoomCode] = useState("");
   const [activeToggleOption, setActiveToggleOption] =
     useState<ToggleOptions>("join");
+
+  const handleOnPlayButtonClicked = () => {
+    if (nickname === "") {
+      alert("Please enter a nickname");
+      return;
+    }
+    if (activeToggleOption === "join") {
+      joinRoom(localRoomCode, nickname).catch((error) => alert(error.message));
+    } else {
+      createNewRoom(nickname);
+    }
+  };
 
   return (
     <ParentClass>
@@ -96,9 +109,9 @@ export const LandingPage = () => {
       <SettingsSection>
         <LabeledInput
           label="Nickname"
-          value={localName}
+          value={nickname}
           onChange={(e) =>
-            setLocalName(e.target.value.toLocaleUpperCase().slice(0, 50))
+            setNickname(e.target.value.toLocaleUpperCase().slice(0, 50))
           }
         />
         <ToggleSwitch
@@ -119,7 +132,9 @@ export const LandingPage = () => {
           />
         </HideableDiv>
       </SettingsSection>
-      <PlayButton className="play">Play</PlayButton>
+      <PlayButton className="play" onClick={handleOnPlayButtonClicked}>
+        Play
+      </PlayButton>
       <DescriptionSection>
         <p>
           Odd Man Out is a thrilling and deceptive trivia game that tests your
