@@ -10,6 +10,7 @@ const ToggleLabel = styled.h1`
   text-shadow: 0 0 10px ${colors.green};
   margin: auto;
   padding: 4px;
+  white-space: nowrap;
 `;
 const ToggleButton = styled.div`
   display: flex;
