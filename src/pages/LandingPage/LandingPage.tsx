@@ -97,7 +97,9 @@ export const LandingPage = () => {
         <LabeledInput
           label="Nickname"
           value={localName}
-          onChange={(e) => setLocalName(e.target.value)}
+          onChange={(e) =>
+            setLocalName(e.target.value.toLocaleUpperCase().slice(0, 50))
+          }
         />
         <ToggleSwitch
           activeToggleOption={activeToggleOption}
@@ -111,7 +113,9 @@ export const LandingPage = () => {
           <LabeledInput
             label="Room Code"
             value={localRoomCode}
-            onChange={(e) => setLocalRoomCode(e.target.value)}
+            onChange={(e) =>
+              setLocalRoomCode(e.target.value.toLocaleUpperCase().slice(0, 4))
+            }
           />
         </HideableDiv>
       </SettingsSection>
