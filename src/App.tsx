@@ -14,6 +14,10 @@ function App() {
     <div>
       <GlobalStyle />
       <LandingPage />
+      <audio controls preload="auto">
+        <p> No support</p>
+        <source src="file:///Users/vineet/Downloads/record-(online-voice-recorder-By-tuna.voicemod.net.mp3" />
+      </audio>
     </div>
   );
 }
