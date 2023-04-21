@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { colors } from "../../colors";
 const BODY_BREAKPOINT = 900;
+const MAX_BODY_WIDTH = 1000;
 
 export const Logo = styled.img`
   min-width: 200px;
@@ -50,7 +51,7 @@ export const ParentClass = styled.div`
   font-family: "Barlow", sans-serif;
   text-transform: uppercase;
   padding: 24px 20%;
-  max-width: 1000px;
+  max-width: ${MAX_BODY_WIDTH}px;
 
   @media (max-width: ${BODY_BREAKPOINT}px) {
     display: flex;
