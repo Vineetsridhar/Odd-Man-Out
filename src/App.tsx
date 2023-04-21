@@ -6,6 +6,19 @@ import BackgroundMusic from "./assets/background-music.mp3";
 import { useEffect, useRef, useState } from "react";
 import SoundOffIcon from "./assets/sound-icon-off.png";
 import SoundOnIcon from "./assets/sound-icon-on.png";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { LobbyPage } from "./pages/LobbyPage/LobbyPage";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <LandingPage />,
+  },
+  {
+    path: "/lobby",
+    element: <LobbyPage />,
+  },
+]);
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -51,9 +64,8 @@ function App() {
   };
 
   return (
-    <div>
+    <>
       <GlobalStyle />
-      <LandingPage />
       <audio ref={audioRef} loop>
         <source src={BackgroundMusic}></source>
       </audio>
@@ -61,7 +73,9 @@ function App() {
         onClick={handleMuteClicked}
         src={audioPlaying ? SoundOnIcon : SoundOffIcon}
       />
-    </div>
+
+      <RouterProvider router={router} />
+    </>
   );
 }
 
