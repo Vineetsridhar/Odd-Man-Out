@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { colors } from "../../colors";
 import { ToggleOptions } from "../../types";
 import { LabeledInput } from "../../components/LabeledInput";
-import { ToggleSwitch } from "../../components/ToggleSwitch";
+import { ToggleSwitch } from "./ToggleSwitch";
 import { createNewRoom, joinRoom } from "../../database/helpers";
 
 const Logo = styled.img`
@@ -141,9 +141,7 @@ export const LandingPage = () => {
         <LabeledInput
           label="Nickname"
           value={nickname}
-          onChange={(e) =>
-            setNickname(e.target.value.toLocaleUpperCase().slice(0, 50))
-          }
+          onChange={(e) => setNickname(e.target.value.slice(0, 50))}
         />
         <ToggleSwitch
           activeToggleOption={activeToggleOption}

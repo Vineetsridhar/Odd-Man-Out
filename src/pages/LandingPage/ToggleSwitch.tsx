@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { colors } from "../colors";
-import { ToggleOptions } from "../types";
-import "../App.css";
+import { colors } from "../../colors";
+import { ToggleOptions } from "../../types";
 
 const ToggleLabel = styled.h1`
   font-size: 20px;
