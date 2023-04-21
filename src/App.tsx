@@ -17,8 +17,13 @@ const AudioButton = styled.img`
   position: absolute;
   top: 32px;
   right: 32px;
-  height: 16px;
+  width: 24px;
   cursor: pointer;
+  transition: all 0.1s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const DEFAULT_AUDIO_VOLUME = 0.01;
