@@ -25,7 +25,9 @@ const ParentClass = styled.div`
   grid-template-areas:
     "logo settings"
     "play-button play-button"
-    "description description";
+    "description description"
+    "images images"
+    "rules rules";
   column-gap: 32px;
   row-gap: 64px;
   font-family: "Barlow", sans-serif;
@@ -65,26 +67,44 @@ const PlayButton = styled.button`
   font-family: "Barlow", sans-serif;
   cursor: pointer;
 `;
-const DescriptionSection = styled.div`
+const DescriptionSection = styled.p`
   grid-area: description;
+  font-size: 1.5em;
+  color: ${colors.textColor};
+  text-transform: initial;
+`;
+const DescriptionImages = styled.div`
+  grid-area: images;
+  display: flex;
+  justify-content: center;
+  img {
+    min-width: 100px;
+    max-width: 400px;
+    width: 100%;
+    object-fit: contain;
+    padding: 0 32px;
+  }
+`;
+const RulesSection = styled.div`
+  grid-area: rules;
+  border-top: 2px solid ${colors.red};
+  padding: 24px;
+  margin: 32px 0 0 0;
   h1 {
+    font-size: 2em;
     color: ${colors.redGlowInner};
     text-shadow: 0 0 10px ${colors.red};
-  }
-  p {
-    color: ${colors.textColor};
-    text-transform: initial;
+    position: absolute;
+    transform: translateX(16px) translateY(-64px);
+    padding: 0px 8px;
+    background-color: ${colors.backgroundColor};
+    border-left: 2px solid ${colors.red};
+    border-right: 2px solid ${colors.red};
   }
   li {
+    font-size: 1.5em;
     color: ${colors.textColor};
     text-transform: initial;
-  }
-  div {
-    display: flex;
-    justify-content: center;
-  }
-  img {
-    height: 300px;
     margin: 24px;
   }
 `;
@@ -146,64 +166,51 @@ export const LandingPage = () => {
         Play
       </PlayButton>
       <DescriptionSection>
-        <p>
-          Odd Man Out is a thrilling and deceptive trivia game that tests your
-          ability to blend in and detect subtle differences in responses. In
-          each round, a group of players is asked a question, but one player -
-          the "Odd Man Out" - receives a slightly different question. The
-          challenge for the players is to identify who the Odd Man Out is, while
-          the Odd Man Out must try to blend in and avoid detection.
-        </p>
-        <div>
-          <img
-            src={OddManOutDescriptionOne}
-            alt="Odd Man Out Description"
-          ></img>
-          <img
-            src={OddManOutDescriptionTwo}
-            alt="Odd Man Out Description"
-          ></img>
-        </div>
-        <h1>How to Play:</h1>
+        Odd Man Out is a thrilling and deceptive game that tests your ability to
+        blend in and detect subtle differences in responses. In each round, a
+        group of players is asked a question, but one player - the "Odd Man Out"
+        - receives a slightly different question. The challenge for the players
+        is to identify who the Odd Man Out is, while the Odd Man Out must try to
+        blend in and avoid detection.
+      </DescriptionSection>
+      <DescriptionImages>
+        <img src={OddManOutDescriptionOne} alt="Odd Man Out Description"></img>
+        <img src={OddManOutDescriptionTwo} alt="Odd Man Out Description"></img>
+      </DescriptionImages>
+      <RulesSection>
+        <h1>How to Play</h1>
         <ul>
-          <li>Gather a group of friends (ideally 4 or more)</li>
           <li>
-            Choose one person to host the game, ensuring they have the ability
-            to share their screen with the rest of the players.
+            Gather a group of friends (ideally 4 or more) and choose one person
+            to host the game
           </li>
           <li>
-            Once all players have joined the game, the host can begin the game.
+            Once all players have joined the game using the room code, the host
+            can begin the game
+          </li>
+          <li>
             All players will receive the same question, except for the Odd Man
-            Out, who will receive a slightly different one.
+            Out, who will receive a slightly different one
           </li>
           <li>
-            Each player, including the Odd Man Out, will type their answer into
-            the platform.
+            Each player, including the Odd Man Out, will submit their answer
+            which will be displayed to everyone
           </li>
           <li>
-            After all answers have been submitted, everyone's answer will be
-            displayed on the screen.
+            Players will then discuss and try to determine who the Odd Man Out
+            is
           </li>
           <li>
-            Players must pay close attention to each response to identify any
-            differences.
+            Players that vote for the correct Odd Man Out first will recieve the
+            most points while the Odd Man Out gains points for being detected by
+            as little players as possible
           </li>
           <li>
-            After everyone has submitted their answers, the players will discuss
-            and try to determine who the Odd Man Out is.
-          </li>
-          <li>
-            The Odd Man Out wins if they successfully avoid detection. The other
-            players win if they correctly identify the Odd Man Out.
+            The game will continue for the specified number of rounds. After the
+            final round, the player with the most points wins
           </li>
         </ul>
-        <p>
-          Odd Man Out Online is a captivating and suspenseful game that
-          encourages critical thinking, observation, and social deduction.
-          Perfect for virtual game nights or remote gatherings, this game will
-          leave players constantly guessing and eager to play again.
-        </p>
-      </DescriptionSection>
+      </RulesSection>
     </ParentClass>
   );
 };
