@@ -9,7 +9,7 @@ const LandingPageInputContainer = styled.div`
 const RedLabel = styled.h1`
   color: ${colors.redGlowInner};
   text-shadow: 0 0 10px ${colors.red};
-  font-size: 0.8em;
+  font-size: 1em;
   position: absolute;
   transform: translateX(10px) translateY(-24px);
   padding: 2px 8px;

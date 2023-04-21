@@ -29,7 +29,7 @@ const ParentClass = styled.div`
     "images images"
     "rules rules";
   column-gap: 32px;
-  row-gap: 64px;
+  row-gap: 32px;
   font-family: "Barlow", sans-serif;
   text-transform: uppercase;
   padding: 24px 20%;
@@ -69,9 +69,10 @@ const PlayButton = styled.button`
 `;
 const DescriptionSection = styled.p`
   grid-area: description;
-  font-size: 1.5em;
+  font-size: 1.2em;
   color: ${colors.textColor};
   text-transform: initial;
+  text-align: justify;
 `;
 const DescriptionImages = styled.div`
   grid-area: images;
@@ -102,7 +103,7 @@ const RulesSection = styled.div`
     border-right: 2px solid ${colors.red};
   }
   li {
-    font-size: 1.5em;
+    font-size: 1.2em;
     color: ${colors.textColor};
     text-transform: initial;
     margin: 24px;
