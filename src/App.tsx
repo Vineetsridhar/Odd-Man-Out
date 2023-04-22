@@ -74,7 +74,6 @@ function App() {
         onClick={handleMuteClicked}
         src={audioPlaying ? SoundOnIcon : SoundOffIcon}
       />
-
       <RouterProvider router={router} />
     </>
   );

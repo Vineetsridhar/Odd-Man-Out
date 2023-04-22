@@ -41,6 +41,11 @@ const getDatabaseValue = async (path: string) => {
   return snapshot.val();
 };
 
+export const kickPlayer = async (roomCode: string, userId: string) => {
+  const path = `rooms/${roomCode}/users/${userId}`;
+  await set(ref(db, path), null);
+};
+
 export const createNewRoom = async (nickname: string) => {
   const roomCode = generateRandomString();
   const dbRef = ref(db, `rooms/${roomCode}`);
