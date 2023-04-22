@@ -1,7 +1,7 @@
 import { initializeApp } from "@firebase/app";
 import { getDatabase, ref, set, get, child, push } from "@firebase/database";
 import { updateRoomData, resetRoomData } from "../useGlobalState";
-import { DatabaseGameState } from "../types";
+import { DatabaseGameState, User } from "../types";
 
 const firebaseConfig = {
   databaseURL: import.meta.env.VITE_FIREBASE_DB_URL,
@@ -25,13 +25,14 @@ export const clearRoomData = () => {
 const saveRoomData = (
   roomCode: string,
   nickname: string,
-  userId: string | null
+  userId: string | null,
+  isHost: boolean
 ) => {
   localStorage.setItem("roomCode", roomCode);
   localStorage.setItem("nickname", nickname);
   if (userId) localStorage.setItem("userId", userId);
 
-  updateRoomData(roomCode, nickname, userId ?? "");
+  updateRoomData(roomCode, nickname, userId ?? "", isHost);
 };
 
 const getDatabaseValue = async (path: string) => {
@@ -50,8 +51,13 @@ export const createNewRoom = async (nickname: string) => {
     createdAt: Date.now(),
     gameEnded: false,
   });
-  const userId = push(child(dbRef, "users"), nickname).key;
-  saveRoomData(roomCode, nickname, userId);
+
+  const newUser: User = {
+    nickname,
+    isHost: true,
+  };
+  const userId = push(child(dbRef, "users"), newUser).key;
+  saveRoomData(roomCode, nickname, userId, true);
 };
 
 export const joinRoom = async (roomCode: string, nickname: string) => {
@@ -63,7 +69,8 @@ export const joinRoom = async (roomCode: string, nickname: string) => {
   }
 
   const users = gameData.users;
-  if (Object.values(users).includes(nickname)) {
+
+  if (Object.values(users).find((user) => user.nickname === nickname)) {
     throw new Error("Nickname already taken");
   }
 
@@ -71,8 +78,13 @@ export const joinRoom = async (roomCode: string, nickname: string) => {
     throw new Error("Room has expired");
   }
 
-  const userId = push(child(ref(db, path), "users"), nickname).key;
-  saveRoomData(roomCode, nickname, userId);
+  const newUser: User = {
+    nickname,
+    isHost: false,
+  };
+
+  const userId = push(child(ref(db, path), "users"), newUser).key;
+  saveRoomData(roomCode, nickname, userId, false);
 };
 
 export const rejoinRoom = async (roomCode: string, userId: string) => {
@@ -85,8 +97,8 @@ export const rejoinRoom = async (roomCode: string, userId: string) => {
 
   const users = gameData.users;
 
-  const nickname = users[userId];
-  if (!nickname) {
+  const user = users[userId];
+  if (!user) {
     throw new Error("User does not exist");
   }
 
@@ -94,5 +106,5 @@ export const rejoinRoom = async (roomCode: string, userId: string) => {
     throw new Error("Room has expired");
   }
 
-  saveRoomData(roomCode, nickname, userId);
+  saveRoomData(roomCode, user.nickname, userId, user.isHost);
 };
