@@ -16,12 +16,16 @@ import {
   RulesSection,
   SettingsSection,
 } from "./styled";
+import { setRoomCode } from "../../useGlobalState";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../routeHelpers";
 
 export const LandingPage = () => {
   const [nickname, setNickname] = useState("");
   const [localRoomCode, setLocalRoomCode] = useState("");
   const [activeToggleOption, setActiveToggleOption] =
     useState<ToggleOptions>("join");
+  const navigate = useNavigate();
 
   const handleOnPlayButtonClicked = () => {
     if (nickname === "") {
@@ -30,8 +34,12 @@ export const LandingPage = () => {
     }
     if (activeToggleOption === "join") {
       joinRoom(localRoomCode, nickname).catch((error) => alert(error.message));
+      setRoomCode(localRoomCode);
+      navigate(ROUTES.lobby);
     } else {
       createNewRoom(nickname);
+      setRoomCode(localRoomCode);
+      navigate(ROUTES.lobby);
     }
   };
 
