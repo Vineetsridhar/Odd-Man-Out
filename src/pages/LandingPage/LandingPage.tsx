@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OddManOutLogo from "../../assets/omo-logo.png";
 import OddManOutDescriptionOne from "../../assets/omo-description-1.png";
 import OddManOutDescriptionTwo from "../../assets/omo-description-2.png";
 import { ToggleOptions } from "../../types";
 import { LabeledInput } from "../../components/LabeledInput";
 import { ToggleSwitch } from "./ToggleSwitch";
-import { createNewRoom, joinRoom } from "../../database/helpers";
+import {
+  clearRoomData,
+  createNewRoom,
+  joinRoom,
+  rejoinRoom,
+} from "../../database/helpers";
 import {
   DescriptionImages,
   DescriptionSection,
@@ -16,22 +21,46 @@ import {
   RulesSection,
   SettingsSection,
 } from "./styled";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../routeHelpers";
 
 export const LandingPage = () => {
   const [nickname, setNickname] = useState("");
   const [localRoomCode, setLocalRoomCode] = useState("");
   const [activeToggleOption, setActiveToggleOption] =
     useState<ToggleOptions>("join");
+  const navigate = useNavigate();
 
-  const handleOnPlayButtonClicked = () => {
+  useEffect(() => {
+    const attemptJoinRoom = async () => {
+      const roomCode = localStorage.getItem("roomCode");
+      const userId = localStorage.getItem("userId");
+      if (roomCode && userId) {
+        try {
+          await rejoinRoom(roomCode, userId);
+          navigate(ROUTES.lobby);
+        } catch (e) {
+          clearRoomData();
+        }
+      }
+    };
+    attemptJoinRoom();
+  }, []);
+
+  const handleOnPlayButtonClicked = async () => {
     if (nickname === "") {
       alert("Please enter a nickname");
       return;
     }
-    if (activeToggleOption === "join") {
-      joinRoom(localRoomCode, nickname).catch((error) => alert(error.message));
-    } else {
-      createNewRoom(nickname);
+    try {
+      if (activeToggleOption === "join") {
+        await joinRoom(localRoomCode, nickname);
+      } else {
+        await createNewRoom(nickname);
+      }
+      navigate(ROUTES.lobby);
+    } catch (error: any) {
+      alert(error.message);
     }
   };
 

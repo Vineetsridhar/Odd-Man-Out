@@ -8,14 +8,15 @@ import SoundOffIcon from "./assets/sound-icon-off.png";
 import SoundOnIcon from "./assets/sound-icon-on.png";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { LobbyPage } from "./pages/LobbyPage/LobbyPage";
+import { ROUTES } from "./routeHelpers";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: ROUTES.root,
     element: <LandingPage />,
   },
   {
-    path: "/lobby",
+    path: ROUTES.lobby,
     element: <LobbyPage />,
   },
 ]);
@@ -73,7 +74,6 @@ function App() {
         onClick={handleMuteClicked}
         src={audioPlaying ? SoundOnIcon : SoundOffIcon}
       />
-
       <RouterProvider router={router} />
     </>
   );
