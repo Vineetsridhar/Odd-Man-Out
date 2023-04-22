@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { colors } from "../../colors";
-import { useGlobalState } from "../../useGlobalState";
+import { updateUsers, useGlobalState } from "../../useGlobalState";
 import { useFirebaseDatabase } from "../../hooks/useFirebaseDatabase";
 import { GameUsers } from "../../types";
 import { useNavigate } from "react-router-dom";
@@ -65,6 +65,15 @@ export const LobbyPage = () => {
 
   const navigate = useNavigate();
   const [players] = useFirebaseDatabase<GameUsers>(`${roomCode}/users`);
+  const [gameStartedAt] = useFirebaseDatabase<number>(
+    `${roomCode}/metadata/gameStartedAt`
+  );
+
+  useEffect(() => {
+    if (gameStartedAt) {
+      navigate(ROUTES.game);
+    }
+  }, [gameStartedAt]);
 
   useEffect(() => {
     if (!roomCode) {
@@ -80,6 +89,10 @@ export const LobbyPage = () => {
       navigate(ROUTES.root);
     }
   }, [players, userId]);
+
+  useEffect(() => {
+    if (players) updateUsers(Object.values(players));
+  }, [players]);
 
   return (
     <LobbyContainer>

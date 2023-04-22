@@ -19,6 +19,10 @@ const router = createBrowserRouter([
     path: ROUTES.lobby,
     element: <LobbyPage />,
   },
+  {
+    path: ROUTES.game,
+    element: <div>Game Page</div>,
+  },
 ]);
 
 const GlobalStyle = createGlobalStyle`

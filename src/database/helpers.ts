@@ -67,6 +67,7 @@ export const createNewRoom = async (nickname: string) => {
       gameEnded: null,
       gameStartedAt: null,
     },
+    rounds: {},
   };
 
   await set(dbRef, newGame);
@@ -74,6 +75,7 @@ export const createNewRoom = async (nickname: string) => {
   const newUser: User = {
     nickname,
     isHost: true,
+    points: 0,
   };
   const userId = push(child(dbRef, "users"), newUser).key;
   saveRoomData(roomCode, nickname, userId, true);
@@ -107,6 +109,7 @@ export const joinRoom = async (roomCode: string, nickname: string) => {
   const newUser: User = {
     nickname,
     isHost: false,
+    points: 0,
   };
 
   const userId = push(child(ref(db, roomCode), "users"), newUser).key;

@@ -1,10 +1,18 @@
 import { create } from "zustand";
+import { User } from "./types";
 
 type GlobalState = {
   roomCode: string | null;
   nickname: string | null;
   userId: string | null;
   isHost: boolean;
+  players: User[] | null;
+  hostName: string | null;
+};
+
+export const updateUsers = (users: User[]) => {
+  const host = users.find((user) => user.isHost);
+  useGlobalState.setState({ players: users, hostName: host?.nickname });
 };
 
 export const updateRoomData = (
@@ -25,4 +33,6 @@ export const useGlobalState = create<GlobalState>(() => ({
   nickname: null,
   userId: null,
   isHost: false,
+  players: null,
+  hostName: null,
 }));
