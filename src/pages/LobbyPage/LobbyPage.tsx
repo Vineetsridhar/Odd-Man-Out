@@ -6,7 +6,7 @@ import { GameUsers } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { ROUTES } from "../../routeHelpers";
-import { kickPlayer } from "../../database/helpers";
+import { kickPlayer, startGame } from "../../database/helpers";
 import { LeaveGameButton } from "../../components/LeaveGameButton";
 
 export const LobbyContainer = styled.div`
@@ -64,7 +64,7 @@ export const LobbyPage = () => {
   const userId = useGlobalState((state) => state.userId);
 
   const navigate = useNavigate();
-  const [players] = useFirebaseDatabase<GameUsers>(`rooms/${roomCode}/users`);
+  const [players] = useFirebaseDatabase<GameUsers>(`${roomCode}/users`);
 
   useEffect(() => {
     if (!roomCode) {
@@ -101,7 +101,11 @@ export const LobbyPage = () => {
       </PlayerList>
       <LeaveGameButton />
 
-      {isHost && <StartGameButton>Start Game</StartGameButton>}
+      {isHost && (
+        <StartGameButton onClick={() => roomCode && startGame(roomCode)}>
+          Start Game
+        </StartGameButton>
+      )}
     </LobbyContainer>
   );
 };

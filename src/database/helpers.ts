@@ -1,7 +1,15 @@
 import { initializeApp } from "@firebase/app";
-import { getDatabase, ref, set, get, child, push } from "@firebase/database";
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  child,
+  push,
+  update,
+} from "@firebase/database";
 import { updateRoomData, resetRoomData } from "../useGlobalState";
-import { DatabaseGameState, User } from "../types";
+import { DatabaseGameState, GameMetadata, GameUsers, User } from "../types";
 
 const firebaseConfig = {
   databaseURL: import.meta.env.VITE_FIREBASE_DB_URL,
@@ -42,20 +50,26 @@ const getDatabaseValue = async (path: string) => {
 };
 
 export const kickPlayer = async (roomCode: string, userId: string) => {
-  const path = `rooms/${roomCode}/users/${userId}`;
+  const path = `${roomCode}/users/${userId}`;
   await set(ref(db, path), null);
 };
 
 export const createNewRoom = async (nickname: string) => {
   const roomCode = generateRandomString();
-  const dbRef = ref(db, `rooms/${roomCode}`);
+  const dbRef = ref(db, roomCode);
 
-  await set(dbRef, {
-    name: roomCode,
-    users: [],
-    createdAt: Date.now(),
-    gameEnded: false,
-  });
+  const newGame: DatabaseGameState = {
+    code: roomCode,
+    users: {},
+    metadata: {
+      gameType: "classic",
+      createdAt: Date.now(),
+      gameEnded: null,
+      gameStartedAt: null,
+    },
+  };
+
+  await set(dbRef, newGame);
 
   const newUser: User = {
     nickname,
@@ -65,21 +79,28 @@ export const createNewRoom = async (nickname: string) => {
   saveRoomData(roomCode, nickname, userId, true);
 };
 
-export const joinRoom = async (roomCode: string, nickname: string) => {
-  const path = `rooms/${roomCode}`;
-  const gameData: DatabaseGameState = await getDatabaseValue(path);
+export const startGame = async (roomCode: string) => {
+  const path = `${roomCode}/metadata`;
+  const dbRef = ref(db, path);
 
-  if (!gameData) {
+  update(dbRef, {
+    gameStartedAt: Date.now(),
+  });
+};
+
+export const joinRoom = async (roomCode: string, nickname: string) => {
+  const users: GameUsers = await getDatabaseValue(`${roomCode}/users`);
+  const metadata: GameMetadata = await getDatabaseValue(`${roomCode}/metadata`);
+
+  if (!metadata) {
     throw new Error("Room does not exist");
   }
-
-  const users = gameData.users;
 
   if (Object.values(users).find((user) => user.nickname === nickname)) {
     throw new Error("Nickname already taken");
   }
 
-  if (gameData.gameEnded || gameData.createdAt < Date.now() - 60 * 60 * 1000) {
+  if (metadata.gameEnded || metadata.createdAt < Date.now() - 60 * 60 * 1000) {
     throw new Error("Room has expired");
   }
 
@@ -88,26 +109,24 @@ export const joinRoom = async (roomCode: string, nickname: string) => {
     isHost: false,
   };
 
-  const userId = push(child(ref(db, path), "users"), newUser).key;
+  const userId = push(child(ref(db, roomCode), "users"), newUser).key;
   saveRoomData(roomCode, nickname, userId, false);
 };
 
 export const rejoinRoom = async (roomCode: string, userId: string) => {
-  const path = `rooms/${roomCode}`;
-  const gameData: DatabaseGameState = await getDatabaseValue(path);
+  const users: GameUsers = await getDatabaseValue(`${roomCode}/users`);
+  const metadata: GameMetadata = await getDatabaseValue(`${roomCode}/metadata`);
 
-  if (!gameData) {
+  if (!metadata) {
     throw new Error("Room does not exist");
   }
-
-  const users = gameData.users;
 
   const user = users[userId];
   if (!user) {
     throw new Error("User does not exist");
   }
 
-  if (gameData.gameEnded || gameData.createdAt < Date.now() - 60 * 60 * 1000) {
+  if (metadata.gameEnded || metadata.createdAt < Date.now() - 60 * 60 * 1000) {
     throw new Error("Room has expired");
   }
 
