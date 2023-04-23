@@ -9,6 +9,7 @@ import SoundOnIcon from "./assets/sound-icon-on.png";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { LobbyPage } from "./pages/LobbyPage/LobbyPage";
 import { ROUTES } from "./routeHelpers";
+import { GamePage } from "./pages/GamePage/GamePage";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
   },
   {
     path: ROUTES.game,
-    element: <div>Game Page</div>,
+    element: <GamePage />,
   },
 ]);
 

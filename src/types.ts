@@ -1,5 +1,6 @@
 export type ToggleOptions = "join" | "create";
 export type GameType = "classic";
+export type RoundStatus = "waiting" | "voting" | "results";
 export type nil = null | undefined;
 
 export type User = {
@@ -22,6 +23,7 @@ export type Round = {
   normalQuestion: string;
   oddManOutQuestion: string;
   answers: GameAnswers;
+  status: RoundStatus;
 };
 export type GameRounds = {
   [key: string]: Round;
@@ -34,6 +36,7 @@ export type GameMetadata = {
   gameEnded: nil;
   gameStartedAt: nil;
   gameType: GameType;
+  currentRound: number | nil;
 };
 export type DatabaseGameState = {
   code: string;

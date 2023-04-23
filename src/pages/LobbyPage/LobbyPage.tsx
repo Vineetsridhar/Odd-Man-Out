@@ -91,7 +91,7 @@ export const LobbyPage = () => {
   }, [players, userId]);
 
   useEffect(() => {
-    if (players) updateUsers(Object.values(players));
+    if (players) updateUsers(players);
   }, [players]);
 
   return (
@@ -101,10 +101,8 @@ export const LobbyPage = () => {
         {players &&
           Object.entries(players).map(
             ([id, { nickname, isHost: isPlayerHost }]) => (
-              <PlayerRow>
-                <Player isHost={isPlayerHost} key={id}>
-                  {nickname}
-                </Player>
+              <PlayerRow key={id}>
+                <Player isHost={isPlayerHost}>{nickname}</Player>
                 {isHost && id !== userId && (
                   <button onClick={() => kickPlayer(roomCode!, id)}>X</button>
                 )}

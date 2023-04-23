@@ -8,8 +8,19 @@ import {
   push,
   update,
 } from "@firebase/database";
-import { updateRoomData, resetRoomData } from "../useGlobalState";
-import { DatabaseGameState, GameMetadata, GameUsers, User } from "../types";
+import {
+  updateRoomData,
+  resetRoomData,
+  useGlobalState,
+} from "../useGlobalState";
+import {
+  DatabaseGameState,
+  GameMetadata,
+  GameUsers,
+  Round,
+  User,
+} from "../types";
+import { questions } from "../questionPairs";
 
 const firebaseConfig = {
   databaseURL: import.meta.env.VITE_FIREBASE_DB_URL,
@@ -20,6 +31,10 @@ const db = getDatabase(app);
 
 const generateRandomString = () => {
   return Math.random().toString(36).substring(2, 6).toUpperCase();
+};
+
+const sampleArray = <T>(array: T[]) => {
+  return array[Math.floor(Math.random() * array.length)];
 };
 
 export const clearRoomData = () => {
@@ -66,6 +81,7 @@ export const createNewRoom = async (nickname: string) => {
       createdAt: Date.now(),
       gameEnded: null,
       gameStartedAt: null,
+      currentRound: null,
     },
     rounds: {},
   };
@@ -82,12 +98,27 @@ export const createNewRoom = async (nickname: string) => {
 };
 
 export const startGame = async (roomCode: string) => {
-  const path = `${roomCode}/metadata`;
-  const dbRef = ref(db, path);
-
-  update(dbRef, {
+  const metadataRef = ref(db, `${roomCode}/metadata`);
+  const roundRef = ref(db, `${roomCode}/rounds`);
+  const questionPair = sampleArray(questions);
+  const oddManOut = sampleArray(
+    Object.keys(useGlobalState.getState().players!)
+  );
+  const newRound: Round = {
+    roundNumber: 1,
+    createdAt: Date.now(),
+    oddManOut: oddManOut,
+    answers: {},
+    status: "waiting",
+    endedAt: null,
+    normalQuestion: questionPair[0],
+    oddManOutQuestion: questionPair[1],
+  };
+  update(metadataRef, {
     gameStartedAt: Date.now(),
+    currentRound: 1,
   });
+  update(roundRef, { round1: newRound });
 };
 
 export const joinRoom = async (roomCode: string, nickname: string) => {
