@@ -6,12 +6,6 @@ import { ToggleOptions } from "../../types";
 import { LabeledInput } from "../../components/LabeledInput";
 import { ToggleSwitch } from "./ToggleSwitch";
 import {
-  clearRoomData,
-  createNewRoom,
-  joinRoom,
-  rejoinRoom,
-} from "../../database/helpers";
-import {
   DescriptionImages,
   DescriptionSection,
   HideableDiv,
@@ -23,6 +17,7 @@ import {
 } from "./styled";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routeHelpers";
+import { clearRoomData, createRoom, joinRoom, rejoinRoom } from "./helpers";
 
 export const LandingPage = () => {
   const [nickname, setNickname] = useState("");
@@ -37,7 +32,7 @@ export const LandingPage = () => {
       const userId = localStorage.getItem("userId");
       if (roomCode && userId) {
         try {
-          await rejoinRoom(roomCode, userId);
+          await rejoinRoom(roomCode, parseInt(userId));
           navigate(ROUTES.lobby);
         } catch (e) {
           clearRoomData();
@@ -54,9 +49,9 @@ export const LandingPage = () => {
     }
     try {
       if (activeToggleOption === "join") {
-        await joinRoom(localRoomCode, nickname);
+        await joinRoom(nickname, localRoomCode);
       } else {
-        await createNewRoom(nickname);
+        await createRoom(nickname);
       }
       navigate(ROUTES.lobby);
     } catch (error: any) {

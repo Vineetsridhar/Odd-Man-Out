@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { colors } from "../colors";
-import { kickPlayer } from "../database/helpers";
 import { useGlobalState } from "../useGlobalState";
 import { redirect, useNavigate } from "react-router-dom";
 import { ROUTES } from "../routeHelpers";
@@ -30,7 +29,7 @@ export const LeaveGameButton = () => {
   const navigate = useNavigate();
 
   const handleRoomLeave = () => {
-    kickPlayer(roomCode!, userId!);
+    // kickPlayer(roomCode!, userId!);
     navigate(ROUTES.root);
   };
   if (roomCode && userId) {
