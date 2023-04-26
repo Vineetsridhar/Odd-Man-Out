@@ -1,5 +1,9 @@
 import { BASE_URL, Session, User } from "../../types";
-import { resetRoomData, updateRoomData } from "../../useGlobalState";
+import {
+  resetRoomData,
+  setRoomPlayers,
+  updateRoomData,
+} from "../../useGlobalState";
 import { DateTime } from "luxon";
 
 type SessionObject = { session: Session; user: User };
@@ -37,6 +41,7 @@ export const createRoom = async (nickname: string): Promise<SessionObject> => {
     throw new Error(data.error);
   }
   saveRoomData(data.session.roomCode, nickname, data.user.id, true);
+  setRoomPlayers([data.user]);
   return data;
 };
 
@@ -57,6 +62,7 @@ export const joinRoom = async (
     throw new Error(data.error);
   }
   saveRoomData(roomCode, nickname, data.user.id, false);
+  setRoomPlayers(data.session.users);
   return data;
 };
 
@@ -90,6 +96,7 @@ export const rejoinRoom = async (
     throw new Error("Room has expired");
   }
 
+  setRoomPlayers(session.users!);
   saveRoomData(roomCode, user.nickname, userId, user.isHost);
   return { session };
 };

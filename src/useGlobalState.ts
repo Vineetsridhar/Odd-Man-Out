@@ -19,6 +19,10 @@ export const updateRoomData = (
   useGlobalState.setState({ roomCode, nickname, userId, isHost });
 };
 
+export const setRoomPlayers = (players: User[]) => {
+  useGlobalState.setState({ players });
+};
+
 export const resetRoomData = () => {
   useGlobalState.setState({ roomCode: null, nickname: null, userId: null });
 };

@@ -57,53 +57,38 @@ const StartGameButton = styled.button`
 `;
 
 export const LobbyPage = () => {
-  return <div>Lobby Page</div>;
+  const roomCode = useGlobalState((state) => state.roomCode);
+  const isHost = useGlobalState((state) => state.isHost);
+  const userId = useGlobalState((state) => state.userId);
+  const players = useGlobalState((state) => state.players);
 
-  // const roomCode = useGlobalState((state) => state.roomCode);
-  // const isHost = useGlobalState((state) => state.isHost);
-  // const userId = useGlobalState((state) => state.userId);
+  const navigate = useNavigate();
 
-  // const navigate = useNavigate();
-  // // const [players] = useFirebaseDatabase<GameUsers>(`${roomCode}/users`);
-  // const [gameStartedAt] = useFirebaseDatabase<number>(
-  //   `${roomCode}/metadata/gameStartedAt`
-  // );
+  useEffect(() => {
+    if (!roomCode) {
+      navigate(ROUTES.root);
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   if (gameStartedAt) {
-  //     navigate(ROUTES.game);
-  //   }
-  // }, [gameStartedAt]);
+  return (
+    <LobbyContainer>
+      <Header>Lobby {roomCode}</Header>
+      <PlayerList>
+        {players &&
+          players.map(({ id, nickname, isHost: isPlayerHost }) => (
+            <PlayerRow key={id}>
+              <Player isHost={isPlayerHost}>{nickname}</Player>
+              {isHost && id !== userId && <button onClick={() => {}}>X</button>}
+            </PlayerRow>
+          ))}
+      </PlayerList>
+      <LeaveGameButton />
 
-  // useEffect(() => {
-  //   if (!roomCode) {
-  //     navigate(ROUTES.root);
-  //   }
-  // }, []);
-
-  // return (
-  //   <LobbyContainer>
-  //     <Header>Lobby {roomCode}</Header>
-  //     <PlayerList>
-  //       {players &&
-  //         Object.entries(players).map(
-  //           ([id, { nickname, isHost: isPlayerHost }]) => (
-  //             <PlayerRow key={id}>
-  //               <Player isHost={isPlayerHost}>{nickname}</Player>
-  //               {isHost && id !== userId && (
-  //                 <button onClick={() => kickPlayer(roomCode!, id)}>X</button>
-  //               )}
-  //             </PlayerRow>
-  //           )
-  //         )}
-  //     </PlayerList>
-  //     <LeaveGameButton />
-
-  //     {isHost && (
-  //       <StartGameButton onClick={() => roomCode /*&& startGame(roomCode)*/}>
-  //         Start Game
-  //       </StartGameButton>
-  //     )}
-  //   </LobbyContainer>
-  // );
+      {isHost && (
+        <StartGameButton onClick={() => roomCode /*&& startGame(roomCode)*/}>
+          Start Game
+        </StartGameButton>
+      )}
+    </LobbyContainer>
+  );
 };
