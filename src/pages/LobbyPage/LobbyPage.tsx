@@ -85,9 +85,7 @@ export const LobbyPage = () => {
       <LeaveGameButton />
 
       {isHost && (
-        <StartGameButton onClick={() => roomCode /*&& startGame(roomCode)*/}>
-          Start Game
-        </StartGameButton>
+        <StartGameButton onClick={() => {}}>Start Game</StartGameButton>
       )}
     </LobbyContainer>
   );

@@ -17,7 +17,7 @@ import {
 } from "./styled";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routeHelpers";
-import { clearRoomData, createRoom, joinRoom, rejoinRoom } from "./helpers";
+import { createRoom, joinRoom, rejoinRoom } from "./helpers";
 
 export const LandingPage = () => {
   const [nickname, setNickname] = useState("");
@@ -28,15 +28,11 @@ export const LandingPage = () => {
 
   useEffect(() => {
     const attemptJoinRoom = async () => {
-      const roomCode = localStorage.getItem("roomCode");
-      const userId = localStorage.getItem("userId");
-      if (roomCode && userId) {
-        try {
-          await rejoinRoom(roomCode, parseInt(userId));
-          navigate(ROUTES.lobby);
-        } catch (e) {
-          clearRoomData();
-        }
+      try {
+        await rejoinRoom();
+        navigate(ROUTES.lobby);
+      } catch (e) {
+        console.error(e);
       }
     };
     attemptJoinRoom();

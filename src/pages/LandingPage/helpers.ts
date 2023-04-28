@@ -1,38 +1,16 @@
-import { BASE_URL, Session, User } from "../../types";
-import {
-  resetRoomData,
-  setRoomPlayers,
-  updateRoomData,
-} from "../../useGlobalState";
+import { BASE_URL, Room, User } from "../../types";
+import { setRoomPlayers, updateRoomData } from "../../useGlobalState";
 import { DateTime } from "luxon";
 
-type SessionObject = { session: Session; user: User };
-export const saveRoomData = (
-  roomCode: string,
-  nickname: string,
-  userId: number,
-  isHost: boolean
-) => {
-  localStorage.setItem("roomCode", roomCode);
-  localStorage.setItem("nickname", nickname);
-  localStorage.setItem("userId", userId.toString());
+type RoomObject = { room: Room; user: User };
 
-  updateRoomData(roomCode, nickname, userId, isHost);
-};
-
-export const clearRoomData = () => {
-  localStorage.removeItem("roomCode");
-  localStorage.removeItem("nickname");
-  localStorage.removeItem("userId");
-  resetRoomData();
-};
-
-export const createRoom = async (nickname: string): Promise<SessionObject> => {
-  const response = await fetch(`${BASE_URL}/sessions`, {
+export const createRoom = async (nickname: string): Promise<RoomObject> => {
+  const response = await fetch(`${BASE_URL}/rooms`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ nickname }),
   });
   const data = await response.json();
@@ -40,7 +18,13 @@ export const createRoom = async (nickname: string): Promise<SessionObject> => {
   if (response.status !== 200) {
     throw new Error(data.error);
   }
-  saveRoomData(data.session.roomCode, nickname, data.user.id, true);
+
+  updateRoomData(
+    data.room.roomCode,
+    nickname,
+    data.user.sessionId,
+    data.user.isHost
+  );
   setRoomPlayers([data.user]);
   return data;
 };
@@ -48,12 +32,13 @@ export const createRoom = async (nickname: string): Promise<SessionObject> => {
 export const joinRoom = async (
   nickname: string,
   roomCode: string
-): Promise<SessionObject> => {
-  const response = await fetch(`${BASE_URL}/sessions/join`, {
+): Promise<RoomObject> => {
+  const response = await fetch(`${BASE_URL}/rooms/join`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ nickname, roomCode }),
   });
   const data = await response.json();
@@ -61,42 +46,29 @@ export const joinRoom = async (
   if (response.status !== 200) {
     throw new Error(data.error);
   }
-  saveRoomData(roomCode, nickname, data.user.id, false);
-  setRoomPlayers(data.session.users);
+
+  updateRoomData(roomCode, nickname, data.user.sessionId, data.user.isHost);
+  setRoomPlayers(data.room.users);
   return data;
 };
 
-export const rejoinRoom = async (
-  roomCode: string,
-  userId: number
-): Promise<{ session: Session }> => {
-  const response = await fetch(`${BASE_URL}/sessions/${roomCode}`, {
+export const rejoinRoom = async () => {
+  const reponse = await fetch(`${BASE_URL}/rooms/join`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    credentials: "include",
   });
-  const data = await response.json();
+  const data = await reponse.json();
 
-  if (response.status !== 200) {
+  if (reponse.status !== 200) {
     throw new Error(data.error);
   }
 
-  const { session }: SessionObject = data;
-  const user = session?.users?.find((user) => user.id === userId);
-
-  if (!user) {
-    throw new Error("User does not exist");
-  }
-
-  if (
-    session.gameEndedAt ||
-    DateTime.fromISO(session.createdAt) < DateTime.now().minus({ hours: 1 })
-  ) {
-    throw new Error("Room has expired");
-  }
-
-  setRoomPlayers(session.users!);
-  saveRoomData(roomCode, user.nickname, userId, user.isHost);
-  return { session };
+  updateRoomData(
+    data.room.roomCode,
+    data.user.nickname,
+    data.user.sessionId,
+    data.user.isHost
+  );
+  setRoomPlayers(data.room.users);
+  return data;
 };

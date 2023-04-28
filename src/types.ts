@@ -3,7 +3,7 @@ export const BASE_URL = "http://localhost:3000";
 export type ToggleOptions = "join" | "create";
 export type GameType = "classic";
 
-export type Session = {
+export type Room = {
   id: number;
   roomCode: string;
   gameEndedAt?: string;
@@ -15,12 +15,12 @@ export type Session = {
 };
 
 export type User = {
-  id: number;
+  id: string;
   nickname: string;
   isHost: boolean;
   points: number;
-  sessionId: string;
-  session?: Session;
+  roomId: string;
+  room?: Room;
   createdAt: string;
   updatedAt: string;
 };

@@ -4,7 +4,7 @@ import { User } from "./types";
 type GlobalState = {
   roomCode: string | null;
   nickname: string | null;
-  userId: number | null;
+  userId: string | null;
   isHost: boolean;
   players: User[] | null;
   hostName: string | null;
@@ -13,7 +13,7 @@ type GlobalState = {
 export const updateRoomData = (
   roomCode: string,
   nickname: string,
-  userId: number,
+  userId: string,
   isHost = false
 ) => {
   useGlobalState.setState({ roomCode, nickname, userId, isHost });
