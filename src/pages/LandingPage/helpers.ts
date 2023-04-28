@@ -1,5 +1,9 @@
 import { BASE_URL, Room, User } from "../../types";
-import { setRoomPlayers, updateRoomData } from "../../useGlobalState";
+import {
+  resetRoomData,
+  setRoomPlayers,
+  updateRoomData,
+} from "../../useGlobalState";
 import { DateTime } from "luxon";
 
 type RoomObject = { room: Room; user: User };
@@ -19,12 +23,7 @@ export const createRoom = async (nickname: string): Promise<RoomObject> => {
     throw new Error(data.error);
   }
 
-  updateRoomData(
-    data.room.roomCode,
-    nickname,
-    data.user.sessionId,
-    data.user.isHost
-  );
+  updateRoomData(data.room.roomCode, nickname, data.user.id, data.user.isHost);
   setRoomPlayers([data.user]);
   return data;
 };
@@ -47,28 +46,43 @@ export const joinRoom = async (
     throw new Error(data.error);
   }
 
-  updateRoomData(roomCode, nickname, data.user.sessionId, data.user.isHost);
+  updateRoomData(roomCode, nickname, data.user.id, data.user.isHost);
   setRoomPlayers(data.room.users);
   return data;
 };
 
 export const rejoinRoom = async () => {
-  const reponse = await fetch(`${BASE_URL}/rooms/join`, {
+  const response = await fetch(`${BASE_URL}/rooms/join`, {
     method: "GET",
     credentials: "include",
   });
-  const data = await reponse.json();
+  const data = await response.json();
 
-  if (reponse.status !== 200) {
+  if (response.status !== 200) {
     throw new Error(data.error);
   }
 
   updateRoomData(
     data.room.roomCode,
     data.user.nickname,
-    data.user.sessionId,
+    data.user.id,
     data.user.isHost
   );
   setRoomPlayers(data.room.users);
   return data;
+};
+
+export const leaveRoom = async () => {
+  const response = await fetch(`${BASE_URL}/rooms`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  const data = await response.json();
+
+  if (response.status !== 200) {
+    throw new Error(data.error);
+  }
+
+  resetRoomData();
+  setRoomPlayers(null);
 };

@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { colors } from "../colors";
 import { useGlobalState } from "../useGlobalState";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../routeHelpers";
+import { leaveRoom } from "../pages/LandingPage/helpers";
 
 const LeaveRoomButton = styled.button`
   font-size: 1.5rem;
@@ -28,9 +29,13 @@ export const LeaveGameButton = () => {
   const userId = useGlobalState((state) => state.userId);
   const navigate = useNavigate();
 
-  const handleRoomLeave = () => {
-    // kickPlayer(roomCode!, userId!);
-    navigate(ROUTES.root);
+  const handleRoomLeave = async () => {
+    try {
+      await leaveRoom();
+      navigate(ROUTES.root);
+    } catch (error: any) {
+      alert(error.message);
+    }
   };
   if (roomCode && userId) {
     return (
