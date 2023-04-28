@@ -31,7 +31,7 @@ export const LeaveGameButton = () => {
 
   const handleRoomLeave = async () => {
     try {
-      await leaveRoom();
+      await leaveRoom(roomCode!);
       navigate(ROUTES.root);
     } catch (error: any) {
       alert(error.message);

@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { colors } from "../../colors";
-import { useGlobalState } from "../../useGlobalState";
+import { setRoomPlayers, useGlobalState } from "../../useGlobalState";
 import { useFirebaseDatabase } from "../../hooks/useFirebaseDatabase";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { ROUTES } from "../../routeHelpers";
 import { LeaveGameButton } from "../../components/LeaveGameButton";
+import { User } from "../../types";
+import { socket } from "../../socket";
 
 export const LobbyContainer = styled.div`
   display: flex;
@@ -59,7 +61,6 @@ const StartGameButton = styled.button`
 export const LobbyPage = () => {
   const roomCode = useGlobalState((state) => state.roomCode);
   const isHost = useGlobalState((state) => state.isHost);
-  const userId = useGlobalState((state) => state.userId);
   const players = useGlobalState((state) => state.players);
 
   const navigate = useNavigate();
@@ -70,6 +71,16 @@ export const LobbyPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const onUsersChanged = (newUsers: User[]) => setRoomPlayers(newUsers);
+
+    const listener = socket.on("users-change", onUsersChanged);
+
+    return () => {
+      listener.off("users-change", onUsersChanged);
+    };
+  }, []);
+
   return (
     <LobbyContainer>
       <Header>Lobby {roomCode}</Header>
@@ -78,7 +89,6 @@ export const LobbyPage = () => {
           players.map(({ id, nickname, isHost: isPlayerHost }) => (
             <PlayerRow key={id}>
               <Player isHost={isPlayerHost}>{nickname}</Player>
-              {isHost && id !== userId && <button onClick={() => {}}>X</button>}
             </PlayerRow>
           ))}
       </PlayerList>

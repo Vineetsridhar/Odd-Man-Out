@@ -1,10 +1,10 @@
+import { socket } from "../../socket";
 import { BASE_URL, Room, User } from "../../types";
 import {
   resetRoomData,
   setRoomPlayers,
   updateRoomData,
 } from "../../useGlobalState";
-import { DateTime } from "luxon";
 
 type RoomObject = { room: Room; user: User };
 
@@ -22,7 +22,7 @@ export const createRoom = async (nickname: string): Promise<RoomObject> => {
   if (response.status !== 200) {
     throw new Error(data.error);
   }
-
+  socket.emit("join-room", data.room.roomCode);
   updateRoomData(data.room.roomCode, nickname, data.user.id, data.user.isHost);
   setRoomPlayers([data.user]);
   return data;
@@ -45,7 +45,7 @@ export const joinRoom = async (
   if (response.status !== 200) {
     throw new Error(data.error);
   }
-
+  socket.emit("join-room", data.room.roomCode);
   updateRoomData(roomCode, nickname, data.user.id, data.user.isHost);
   setRoomPlayers(data.room.users);
   return data;
@@ -62,6 +62,7 @@ export const rejoinRoom = async () => {
     throw new Error(data.error);
   }
 
+  socket.emit("join-room", data.room.roomCode);
   updateRoomData(
     data.room.roomCode,
     data.user.nickname,
@@ -72,7 +73,7 @@ export const rejoinRoom = async () => {
   return data;
 };
 
-export const leaveRoom = async () => {
+export const leaveRoom = async (roomCode: string) => {
   const response = await fetch(`${BASE_URL}/rooms`, {
     method: "DELETE",
     credentials: "include",
@@ -82,6 +83,8 @@ export const leaveRoom = async () => {
   if (response.status !== 200) {
     throw new Error(data.error);
   }
+
+  socket.emit("leave-room", roomCode);
 
   resetRoomData();
   setRoomPlayers(null);
