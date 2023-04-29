@@ -9,6 +9,7 @@ import SoundOnIcon from "./assets/sound-icon-on.png";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { LobbyPage } from "./pages/LobbyPage/LobbyPage";
 import { ROUTES } from "./routeHelpers";
+import { socket } from "./socket";
 
 const router = createBrowserRouter([
   {
@@ -40,7 +41,7 @@ const AudioButton = styled.img`
   }
 `;
 
-const DEFAULT_AUDIO_VOLUME = 0.01;
+const DEFAULT_AUDIO_VOLUME = 1;
 
 function App() {
   const [audioPlaying, setAudioPlaying] = useState(false);
@@ -50,6 +51,12 @@ function App() {
   useEffect(() => {
     if (!audioRef.current) return;
     audioRef.current.volume = DEFAULT_AUDIO_VOLUME;
+
+    socket.connect();
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const handleMuteClicked = () => {

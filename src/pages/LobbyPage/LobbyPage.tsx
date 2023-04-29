@@ -1,13 +1,12 @@
 import styled from "styled-components";
 import { colors } from "../../colors";
-import { useGlobalState } from "../../useGlobalState";
-import { useFirebaseDatabase } from "../../hooks/useFirebaseDatabase";
-import { GameUsers } from "../../types";
+import { setRoomPlayers, useGlobalState } from "../../useGlobalState";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { ROUTES } from "../../routeHelpers";
-import { kickPlayer } from "../../database/helpers";
 import { LeaveGameButton } from "../../components/LeaveGameButton";
+import { User } from "../../types";
+import { socket } from "../../socket";
 
 export const LobbyContainer = styled.div`
   display: flex;
@@ -61,10 +60,9 @@ const StartGameButton = styled.button`
 export const LobbyPage = () => {
   const roomCode = useGlobalState((state) => state.roomCode);
   const isHost = useGlobalState((state) => state.isHost);
-  const userId = useGlobalState((state) => state.userId);
+  const players = useGlobalState((state) => state.players);
 
   const navigate = useNavigate();
-  const [players] = useFirebaseDatabase<GameUsers>(`rooms/${roomCode}/users`);
 
   useEffect(() => {
     if (!roomCode) {
@@ -73,35 +71,31 @@ export const LobbyPage = () => {
   }, []);
 
   useEffect(() => {
-    if (!players || !userId) return;
+    const onUsersChanged = (newUsers: User[]) => setRoomPlayers(newUsers);
 
-    const currentPlayer = players[userId];
-    if (!currentPlayer) {
-      navigate(ROUTES.root);
-    }
-  }, [players, userId]);
+    const listener = socket.on("users-change", onUsersChanged);
+
+    return () => {
+      listener.off("users-change", onUsersChanged);
+    };
+  }, []);
 
   return (
     <LobbyContainer>
       <Header>Lobby {roomCode}</Header>
       <PlayerList>
         {players &&
-          Object.entries(players).map(
-            ([id, { nickname, isHost: isPlayerHost }]) => (
-              <PlayerRow>
-                <Player isHost={isPlayerHost} key={id}>
-                  {nickname}
-                </Player>
-                {isHost && id !== userId && (
-                  <button onClick={() => kickPlayer(roomCode!, id)}>X</button>
-                )}
-              </PlayerRow>
-            )
-          )}
+          players.map(({ id, nickname, isHost: isPlayerHost }) => (
+            <PlayerRow key={id}>
+              <Player isHost={isPlayerHost}>{nickname}</Player>
+            </PlayerRow>
+          ))}
       </PlayerList>
       <LeaveGameButton />
 
-      {isHost && <StartGameButton>Start Game</StartGameButton>}
+      {isHost && (
+        <StartGameButton onClick={() => {}}>Start Game</StartGameButton>
+      )}
     </LobbyContainer>
   );
 };
