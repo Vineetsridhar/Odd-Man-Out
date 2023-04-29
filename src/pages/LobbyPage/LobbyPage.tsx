@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { colors } from "../../colors";
 import { setRoomPlayers, useGlobalState } from "../../useGlobalState";
-import { useFirebaseDatabase } from "../../hooks/useFirebaseDatabase";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { ROUTES } from "../../routeHelpers";
