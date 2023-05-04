@@ -18,6 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routeHelpers";
 import { createRoom, joinRoom, rejoinRoom } from "./helpers";
+import { showErrorToast } from "../../toastHelpers";
 
 export const LandingPage = () => {
   const [nickname, setNickname] = useState("");
@@ -38,9 +39,18 @@ export const LandingPage = () => {
     attemptJoinRoom();
   }, []);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomCode = urlParams.get("roomCode");
+    if (roomCode) {
+      setLocalRoomCode(roomCode.slice(0, 4).toLocaleUpperCase());
+      setActiveToggleOption("join");
+    }
+  }, []);
+
   const handleOnPlayButtonClicked = async () => {
     if (nickname === "") {
-      alert("Please enter a nickname");
+      showErrorToast("Please enter a nickname");
       return;
     }
     try {
@@ -51,7 +61,7 @@ export const LandingPage = () => {
       }
       navigate(ROUTES.lobby);
     } catch (error: any) {
-      alert(error.message);
+      showErrorToast(error.message);
     }
   };
 
@@ -63,6 +73,7 @@ export const LandingPage = () => {
           label="Nickname"
           value={nickname}
           onChange={(e) => setNickname(e.target.value.slice(0, 50))}
+          placeholder="John Doe"
         />
         <ToggleSwitch
           activeToggleOption={activeToggleOption}
@@ -79,6 +90,7 @@ export const LandingPage = () => {
             onChange={(e) =>
               setLocalRoomCode(e.target.value.toLocaleUpperCase().slice(0, 4))
             }
+            placeholder="ABCD"
           />
         </HideableDiv>
       </SettingsSection>

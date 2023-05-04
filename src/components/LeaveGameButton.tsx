@@ -4,6 +4,7 @@ import { useGlobalState } from "../useGlobalState";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../routeHelpers";
 import { leaveRoom } from "../pages/LandingPage/helpers";
+import { showErrorToast } from "../toastHelpers";
 
 const LeaveRoomButton = styled.button`
   font-size: 1.5rem;
@@ -34,7 +35,7 @@ export const LeaveGameButton = () => {
       await leaveRoom(roomCode!);
       navigate(ROUTES.root);
     } catch (error: any) {
-      alert(error.message);
+      showErrorToast(error.message);
     }
   };
   if (roomCode && userId) {
