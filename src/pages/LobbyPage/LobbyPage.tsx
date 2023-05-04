@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import { colors } from "../../colors";
-import { setRoomPlayers, useGlobalState } from "../../useGlobalState";
+import { useGlobalState } from "../../useGlobalState";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { ROUTES } from "../../routeHelpers";
 import { LeaveGameButton } from "../../components/LeaveGameButton";
-import { User } from "../../types";
 import { socket } from "../../socket";
+import { handleUsersChanged, handleGameStarted, startGame } from "./helpers";
 
 export const LobbyContainer = styled.div`
   display: flex;
@@ -71,12 +71,12 @@ export const LobbyPage = () => {
   }, []);
 
   useEffect(() => {
-    const onUsersChanged = (newUsers: User[]) => setRoomPlayers(newUsers);
-
-    const listener = socket.on("users-change", onUsersChanged);
+    socket.on("users-change", handleUsersChanged);
+    socket.on("game-started", handleGameStarted);
 
     return () => {
-      listener.off("users-change", onUsersChanged);
+      socket.off("users-change", handleUsersChanged);
+      socket.off("game-started", handleGameStarted);
     };
   }, []);
 
@@ -94,7 +94,7 @@ export const LobbyPage = () => {
       <LeaveGameButton />
 
       {isHost && (
-        <StartGameButton onClick={() => {}}>Start Game</StartGameButton>
+        <StartGameButton onClick={startGame}>Start Game</StartGameButton>
       )}
     </LobbyContainer>
   );
