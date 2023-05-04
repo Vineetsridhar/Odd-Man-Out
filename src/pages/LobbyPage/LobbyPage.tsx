@@ -56,6 +56,11 @@ const StartGameButton = styled.button`
     transform: scale(1.1);
   }
 `;
+const GameLink = styled.p`
+  font-size: 1.5rem;
+  color: ${colors.textColor};
+  font-family: "Barlow", sans-serif;
+`;
 
 export const LobbyPage = () => {
   const roomCode = useGlobalState((state) => state.roomCode);
@@ -83,6 +88,7 @@ export const LobbyPage = () => {
   return (
     <LobbyContainer>
       <Header>Lobby {roomCode}</Header>
+
       <PlayerList>
         {players &&
           players.map(({ id, nickname, isHost: isPlayerHost }) => (
@@ -92,6 +98,7 @@ export const LobbyPage = () => {
           ))}
       </PlayerList>
       <LeaveGameButton />
+      <GameLink>{`${window.location.origin}/?roomCode=${roomCode}`}</GameLink>
 
       {isHost && (
         <StartGameButton onClick={() => {}}>Start Game</StartGameButton>

@@ -39,6 +39,15 @@ export const LandingPage = () => {
     attemptJoinRoom();
   }, []);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomCode = urlParams.get("roomCode");
+    if (roomCode) {
+      setLocalRoomCode(roomCode.slice(0, 4).toLocaleUpperCase());
+      setActiveToggleOption("join");
+    }
+  }, []);
+
   const handleOnPlayButtonClicked = async () => {
     if (nickname === "") {
       showErrorToast("Please enter a nickname");
@@ -64,6 +73,7 @@ export const LandingPage = () => {
           label="Nickname"
           value={nickname}
           onChange={(e) => setNickname(e.target.value.slice(0, 50))}
+          placeholder="John Doe"
         />
         <ToggleSwitch
           activeToggleOption={activeToggleOption}
@@ -80,6 +90,7 @@ export const LandingPage = () => {
             onChange={(e) =>
               setLocalRoomCode(e.target.value.toLocaleUpperCase().slice(0, 4))
             }
+            placeholder="ABCD"
           />
         </HideableDiv>
       </SettingsSection>

@@ -34,13 +34,24 @@ type LabeledInputProps = {
   label: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  [key: string]: any;
 };
 
-export const LabeledInput = ({ value, onChange, label }: LabeledInputProps) => {
+export const LabeledInput = ({
+  value,
+  onChange,
+  label,
+  ...otherProps
+}: LabeledInputProps) => {
   return (
     <LandingPageInputContainer>
       <RedLabel>{label}</RedLabel>
-      <LandingPageInput type="text" value={value} onChange={onChange} />
+      <LandingPageInput
+        type="text"
+        value={value}
+        onChange={onChange}
+        {...otherProps}
+      />
     </LandingPageInputContainer>
   );
 };

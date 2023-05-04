@@ -43,7 +43,7 @@ const AudioButton = styled.img`
   }
 `;
 
-const DEFAULT_AUDIO_VOLUME = 1;
+const DEFAULT_AUDIO_VOLUME = 0.5;
 
 function App() {
   const [audioPlaying, setAudioPlaying] = useState(false);
