@@ -18,6 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routeHelpers";
 import { createRoom, joinRoom, rejoinRoom } from "./helpers";
+import { showErrorToast } from "../../toastHelpers";
 
 export const LandingPage = () => {
   const [nickname, setNickname] = useState("");
@@ -40,7 +41,7 @@ export const LandingPage = () => {
 
   const handleOnPlayButtonClicked = async () => {
     if (nickname === "") {
-      alert("Please enter a nickname");
+      showErrorToast("Please enter a nickname");
       return;
     }
     try {
@@ -51,7 +52,7 @@ export const LandingPage = () => {
       }
       navigate(ROUTES.lobby);
     } catch (error: any) {
-      alert(error.message);
+      showErrorToast(error.message);
     }
   };
 

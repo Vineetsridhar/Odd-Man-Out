@@ -10,6 +10,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { LobbyPage } from "./pages/LobbyPage/LobbyPage";
 import { ROUTES } from "./routeHelpers";
 import { socket } from "./socket";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter([
   {
@@ -81,6 +83,7 @@ function App() {
         onClick={handleMuteClicked}
         src={audioPlaying ? SoundOnIcon : SoundOffIcon}
       />
+      <ToastContainer />
       <RouterProvider router={router} />
     </>
   );
