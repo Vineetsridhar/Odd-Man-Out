@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import { colors } from "../../colors";
 import { setRoomPlayers, useGlobalState } from "../../useGlobalState";
 import { useNavigate } from "react-router-dom";

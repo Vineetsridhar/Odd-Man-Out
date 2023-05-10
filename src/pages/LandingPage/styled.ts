@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import { colors } from "../../colors";
 const BODY_BREAKPOINT = 900;
 const MAX_BODY_WIDTH = 1000;
