@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from "styled-components";
+import { Global, css } from "@emotion/react";
 import { colors } from "./colors";
 import "./App.css";
 import { LandingPage } from "./pages/LandingPage/LandingPage";
@@ -23,25 +23,6 @@ const router = createBrowserRouter([
     element: <LobbyPage />,
   },
 ]);
-
-const GlobalStyle = createGlobalStyle`
-  body {
-    background-color: ${colors.backgroundColor};
-  }
-`;
-
-const AudioButton = styled.img`
-  position: absolute;
-  top: 32px;
-  right: 32px;
-  width: 24px;
-  cursor: pointer;
-  transition: all 0.1s ease-in-out;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-`;
 
 const DEFAULT_AUDIO_VOLUME = 0.5;
 
@@ -75,13 +56,31 @@ function App() {
 
   return (
     <>
-      <GlobalStyle />
+      <Global
+        styles={css`
+          body {
+            background-color: ${colors.backgroundColor};
+          }
+        `}
+      />
       <audio ref={audioRef} loop>
         <source src={BackgroundMusic}></source>
       </audio>
-      <AudioButton
+      <img
         onClick={handleMuteClicked}
         src={audioPlaying ? SoundOnIcon : SoundOffIcon}
+        css={css`
+          position: absolute;
+          top: 32px;
+          right: 32px;
+          width: 24px;
+          cursor: pointer;
+          transition: all 0.1s ease-in-out;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+        `}
       />
       <ToastContainer />
       <RouterProvider router={router} />
